@@ -1,6 +1,9 @@
 package pages;
+
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,36 +14,65 @@ public class LoginPage {
     private AndroidDriver driver;
     private WebDriverWait wait;
 
+    private final By loginTitleLocator = AppiumBy.accessibilityId("Anmelden");
+    private final By usernameFieldLocator = By.xpath("(//android.widget.EditText)[1]");
+    private final By passwordFieldLocator = By.xpath("(//android.widget.EditText)[2]");
+    private final By loginButtonLocator = AppiumBy.accessibilityId("Anmelden");
+    private final By errorMessageLocator = AppiumBy.accessibilityId("Ungültige Anmeldedaten");
+    private final By successIndicatorLocator = AppiumBy.accessibilityId("Home");
+
+
     public LoginPage(AndroidDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-
-    private final String skipButtonId = "Überspringen";
-    private final String emailXpath = "//android.widget.ScrollView/android.widget.EditText[1]";
-    private final String passwordXpath = "//android.widget.ScrollView/android.widget.EditText[2]";
-    private final String loginButtonText = "Einloggen"; // if available by text
-
-    // Actions
-    public void tapSkipButton() {
-        WebElement skip = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId(skipButtonId)));
-        skip.click();
+    public boolean verifyLoginPageVisible() {
+        WebElement title = wait.until(ExpectedConditions.visibilityOfElementLocated(loginTitleLocator));
+        System.out.println("Login page is visible.");
+        return title.isDisplayed();
     }
 
-    public void enterEmail(String email) {
-        WebElement emailField = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath(emailXpath)));
-        emailField.sendKeys(email);
+    public void enterUsername(String username) {
+        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(usernameFieldLocator));
+        usernameField.click();
+        usernameField.clear();
+        usernameField.sendKeys(username);
+        System.out.println("Entered username.");
     }
 
     public void enterPassword(String password) {
-        WebElement passwordField = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath(passwordXpath)));
+        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(passwordFieldLocator));
+        passwordField.click();
+        passwordField.clear();
         passwordField.sendKeys(password);
+        System.out.println("Entered password.");
     }
 
     public void tapLoginButton() {
-        WebElement loginBtn = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.androidUIAutomator(
-                "new UiSelector().text(\"" + loginButtonText + "\")")));
-        loginBtn.click();
+        WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(loginButtonLocator));
+        loginButton.click();
+        System.out.println("Tapped login button.");
+    }
+
+    public boolean isLoginSuccessful() {
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(successIndicatorLocator));
+            System.out.println("Login successful.");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isErrorMessageDisplayed() {
+        try {
+            WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessageLocator));
+            System.out.println("Error message displayed: " + error.getText());
+            return true;
+        } catch (TimeoutException e) {
+            System.out.println("Error message not shown within wait time.");
+            return false;
+        }
     }
 }

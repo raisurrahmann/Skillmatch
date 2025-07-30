@@ -1,4 +1,47 @@
 package tests;
 
-public class LoginTest {
+import base.BaseTest;
+import config.TestData;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import pages.LandingPage;
+import pages.LoginPage;
+
+public class LoginTest extends BaseTest {
+    private LandingPage landingPage;
+    private LoginPage loginPage;
+
+
+
+    @Test
+    public void testLoginWithValidCredentials() {
+        landingPage = new LandingPage(driver);
+        landingPage.verifySplashScreenVisible();
+        landingPage.tapSkipButton();
+
+        loginPage = new LoginPage(driver);
+        assert loginPage.verifyLoginPageVisible();
+
+        loginPage.enterUsername(TestData.get("valid.email"));
+        loginPage.enterPassword(TestData.get("valid.password"));
+        loginPage.tapLoginButton();
+
+        Assert.assertTrue(loginPage.isLoginSuccessful(), "Login failed with valid credentials.");
+    }
+
+    @Test
+    public void testLoginWithInvalidCredentials() {
+        landingPage = new LandingPage(driver);
+        landingPage.verifySplashScreenVisible();
+        landingPage.tapSkipButton();
+
+        loginPage = new LoginPage(driver);
+        assert loginPage.verifyLoginPageVisible();
+
+        loginPage.enterUsername(TestData.get("invalid.email"));
+        loginPage.enterPassword(TestData.get("invalid.password"));
+        loginPage.tapLoginButton();
+
+        assert loginPage.isErrorMessageDisplayed();
+    }
 }

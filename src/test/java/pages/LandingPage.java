@@ -3,6 +3,7 @@ package pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -28,8 +29,12 @@ public class LandingPage {
     }
 
     public void tapSkipButton() {
-        WebElement skip = wait.until(ExpectedConditions.elementToBeClickable(skipButtonLocator));
-        skip.click();
-        System.out.println("Tapped on the 'Überspringen' (Skip) button.");
+        try {
+            WebElement skip = wait.until(ExpectedConditions.elementToBeClickable(skipButtonLocator));
+            skip.click();
+            System.out.println("Tapped on the 'Überspringen' (Skip) button.");
+        } catch (TimeoutException e) {
+            System.out.println("Skip button not found – possibly already skipped.");
+        }
     }
 }
