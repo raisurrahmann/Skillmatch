@@ -17,9 +17,8 @@ public class LoginPage {
     private final By loginTitleLocator = AppiumBy.accessibilityId("Anmelden");
     private final By usernameFieldLocator = By.xpath("(//android.widget.EditText)[1]");
     private final By passwordFieldLocator = By.xpath("(//android.widget.EditText)[2]");
-    private final By loginButtonLocator = AppiumBy.accessibilityId("Anmelden");
-    private final By errorMessageLocator = AppiumBy.accessibilityId("Ungültige Anmeldedaten");
-    private final By successIndicatorLocator = AppiumBy.accessibilityId("Home");
+    private final By loginButtonLocator = By.xpath("(//android.view.View[@content-desc='Anmelden']");
+    private final By errorMessageLocator = AppiumBy.accessibilityId("Anmelden\\nFalsches Passwort oder Benutzername/E-Mail. Bitte versuch es erneut");
 
 
     public LoginPage(AndroidDriver driver) {
@@ -55,15 +54,6 @@ public class LoginPage {
         System.out.println("Tapped login button.");
     }
 
-    public boolean isLoginSuccessful() {
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(successIndicatorLocator));
-            System.out.println("Login successful.");
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     public boolean isErrorMessageDisplayed() {
         try {

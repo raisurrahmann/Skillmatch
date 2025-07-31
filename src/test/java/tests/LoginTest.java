@@ -6,10 +6,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.LandingPage;
 import pages.LoginPage;
+import pages.OtpPage;
 
 public class LoginTest extends BaseTest {
     private LandingPage landingPage;
     private LoginPage loginPage;
+    private OtpPage otpPage;
 
 
 
@@ -26,7 +28,7 @@ public class LoginTest extends BaseTest {
         loginPage.enterPassword(TestData.get("valid.password"));
         loginPage.tapLoginButton();
 
-        Assert.assertTrue(loginPage.isLoginSuccessful(), "Login failed with valid credentials.");
+        Assert.assertTrue(otpPage.isLoginSuccessful(), "Login failed with valid credentials.");
     }
 
     @Test
